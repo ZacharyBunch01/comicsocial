@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.db.models import Q
 from django.views import View
 from .models import Post, Comment, UserProfile
 from .forms import PostForm, CommentForm
@@ -7,17 +8,16 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView, DeleteView
 from django.http import HttpResponseRedirect
 
-class PostListView(LoginRequiredMixin, View):
+class PostListView(View):
 	def get(self, request, *args, **kwargs):
 		posts = Post.objects.all().order_by('-created_on')
-		form = PostForm()
+		form = PostForm(request.POST, request.FILES)
 
 		context = {
 			'post_list': posts,
 			'form': form,
 		}
-		return render(request, 'post_list.html', 
-context)
+		return render(request, 'post_list.html', context)
 		
 	def post(self, request, *args, **kargs):
 		posts = Post.objects.all()
@@ -44,7 +44,7 @@ class PostDetailView(LoginRequiredMixin, View):
             'form': form,
             'comments': comments,
         }
-        return render(request, 'social/post_detail.html', context)
+        return render(request, 'post_detail.html', context)
     def post(self, request, pk, *args, **kwargs):
         post = Post.objects.get(pk = pk)
         form = CommentForm(request.POST)
@@ -60,12 +60,12 @@ class PostDetailView(LoginRequiredMixin, View):
             'form': form,
             'comments': comments,
         }
-        return render(request, 'social/post_detail.html', context)
+        return render(request, 'post_detail.html', context)
 
 class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 	model = Post
 	fields = ['body']
-	template_name = 'social/post_edit.html'
+	template_name = 'post_edit.html'
 
 	def get_success_url(self):
 		pk = self.kwargs['pk']
@@ -77,12 +77,12 @@ class PostEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 	model = Post
-	template_name = 'social/post_delete.html'
+	template_name = 'post_delete.html'
 	success_url = reverse_lazy('post-list')
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 	model = Comment
-	template_name = 'social/comment_delete.html'
+	template_name = 'comment_delete.html'
 	
 	def get_success_url(self):
 		pk = self,kwargs['post_pk']
@@ -93,11 +93,10 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 		return self.request_user == comment.author
 	
 class ProfileView(View):
-	def get(self, requeset, pk, *args, **kwargs):
+	def get(self, request, pk, *args, **kwargs):
 		profile = UserProfile.objects.get(pk = pk)
 		user = profile.user
-		posts = Post.objects.filter(author = 
-user).order_by('-created_on')
+		posts = Post.objects.filter(author = user).order_by('-created_on')
 
 		subscribers = profile.followers.all()
 
@@ -116,13 +115,13 @@ user).order_by('-created_on')
 			'posts': posts,
 			}
 			
-		return render(request, 'social/templates/profile.html', context)
+		return render(request, 'profile.html', context)
 
 class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, 
 UpdateView):
 	model = UserProfile
 	fields = ['name', 'bio', 'picture']
-	template_name = 'social/templates/profile_edit.html'
+	template_name = 'profile_edit.html'
 
 	def get_success_url(self):
 		pk = self.kwargs['pk']
@@ -135,13 +134,13 @@ UpdateView):
 class AddFollower(LoginRequiredMixin, View):
 	def post(self, request, pk, *args, **kwargs):
 		profile = UserProfile.objects.get(pk = pk)
-		profile.followers.add(requested.user)
+		profile.followers.add(request.user)
 		return redirect('profile', pk = profile.pk)
 
 class RemoveFollower(LoginRequiredMixin, View):
 	def post(self, request, pk, *args, **kwargs):
 		profile = UserProfile.objects.get(pk = pk)
-		profile.followers.remove(requested.user)
+		profile.followers.remove(request.user)
 		return redirect('profile', pk = profile.pk)
 
 class AddLike(LoginRequiredMixin, View):
@@ -169,7 +168,7 @@ class AddLike(LoginRequiredMixin, View):
 				post.likes.add(request.user)
 
 			if is_like:
-				post.likes.remove(requested.user)
+				post.likes.remove(request.user)
 			next = request.POST.get('next', '/')
 			return httpResponseRedirect(next)
 
@@ -186,15 +185,15 @@ class AddDislike(LoginRequiredMixin, View):
 		is_dislike = False
 		
 		for dislike in post.dislikes.all():
-			if dislike == requested.user:
+			if dislike == request.user:
 				is_dislike = True
 				break
 
 		if not is_dislike:
-			post.dislikes.add(requested.user)
+			post.dislikes.add(request.user)
 
 		if is_dislike:
-			post.dislikes.remove(requested.user)
+			post.dislikes.remove(request.user)
 		
 		next = request.POST.get('next', '/')
 		return HttpResponseRedirect(next)
@@ -203,12 +202,11 @@ class UserSearch(View):
 	def get(self, request, *args, **kwargs):
 		query = self.request.GET.get('query')
 		profile_list = UserProfile.objects.filter(Q(user__username__icontains = query))
-		context = { 'profile_list': profile_list}
-		return render(request, 'social/search.html', context)
+		context = { 'profile_list': profile_list }
+		return render(request, 'search.html', context)
 
 		logged_in_user = request.user
-		posts = Post.objects.filter(
-    		author__profile__followers__in=[logged_in_user.id]).order_by('-created_on')
+		posts = Post.objects.filter(author__profile__followers__in=[logged_in_user.id]).order_by('-created_on')
 
 class ListFollowers(View):
 	def get(self, request, pk, *args, **kwargs):
@@ -220,7 +218,7 @@ class ListFollowers(View):
 			'followers': followers,
 		}
 
-		return render(request, 'social/followers_list.html', 
+		return render(request, 'followers_list.html',
 context)
 
 class AddComment(LoginRequiredMixin, View):
@@ -233,7 +231,7 @@ class AddComment(LoginRequiredMixin, View):
 				break
 
 		if is_dislike:
-			comment.dislikes.remove(requested.user)
+			comment.dislikes.remove(request.user)
 		
 		is_like = False
 
@@ -242,10 +240,10 @@ class AddComment(LoginRequiredMixin, View):
 				break
 
 		if not is_like:
-			comment.likes.add(requested.user)
+			comment.likes.add(request.user)
 
 		if is_like:
-			comment.likes.remove(requested.user)
+			comment.likes.remove(request.user)
 
 		next = request.POST.get('next', '/')
 		return HttpResponseRedirect(next)
@@ -257,7 +255,7 @@ class AddCommentLike(LoginRequiredMixin, View):
 		is_dislike = False
 
 		for dislike in comment.dislikes.all():
-			if dislike == requested.user:
+			if dislike == request.user:
 				is_dislike = True
 				break
 
@@ -267,7 +265,7 @@ class AddCommentLike(LoginRequiredMixin, View):
 		is_like = False
 
 		for like in comment.likes.all():
-			if like == requested.user:
+			if like == request.user:
 				is_like = True
 				break
 
@@ -318,13 +316,12 @@ class CommentReplyView(LoginRequiredMixin, View):
 
 		if form.is_valid():
 			new_comment = form.save(commit = False)
-			new_comment.author = requested.user
+			new_comment.author = request.user
 			new_comment.post = post
 			new_comment.parent = parent_comment
 			new_comment.save()
 
-		comments = Comment.object.filter(post = 
-post).order_by('-created_on')
+		comments = Comment.object.filter(post = post).order_by('-created_on')
 
 		context = {
 			'post': post,

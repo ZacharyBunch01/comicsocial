@@ -5,9 +5,11 @@ class PostForm(forms.ModelForm):
 	body = forms.CharField(
 		label = '',
 		widget = forms.Textarea(
-			attrs = {'rows': '3',
-			'placeholder': 'Say Something...'}
+			attrs = {'rows': '1',
+			'placeholder': 'Name'}
 		))
+
+	comic = forms.ImageField(required = True)
 
 	class Meta:
 		model = Post
@@ -16,8 +18,7 @@ class PostForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
 	comment = forms.CharField(
 		label = '',
-		widget = forms.Textarea(
-			attrs = {'rows': '3', 'placeholder': 'Say Something...'}))
+		widget = forms.Textarea(attrs = {'rows': '3', 'placeholder': 'Make a Comment...'}))
 
 	class Meta:
 		model = Comment

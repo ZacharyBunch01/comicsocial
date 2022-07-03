@@ -19,15 +19,15 @@ CommentDeleteView.as_view(), name = 'comment-delete'),
 'profile-edit'),
 	path('profile/<int:pk>/subscribers/add', AddFollower.as_view(), 
 name = 'add-subscriber'),
-	path('profile/<int:pk>/subscribers/remove', 
-RemoveFollower.as_view(), name = 'remove-subscriber'),
+	path('profile/<int:pk>/subscribers/remove', RemoveFollower.as_view(), name = 'remove-subscriber'),
 	path('search/', UserSearch.as_view(), name = 'profile-search'),
-	path('profile/<int:pk>/followers', ListFollowers.as_view(), name 
+	path('profile/<int:pk>/subscribers', ListFollowers.as_view(), 
+name 
 = 'followers-list'),
 	path('post/<int:post_pk>/comment/delete/<int:pk>/', 
 CommentDeleteView.as_view(), name = 'comment-delete'),
 	path('post/<int:post_pk>/comment/<int:pk>/like', 
 AddCommentLike.as_view(), name = 'comment-like'),
 	path('post/<int:post_pk>/comment/reply/<int:pk>', 
-CommentReplyView.as_view(), name = 'comment-reply'),
+CommentReplyView.as_view(), name = 'comment-reply')
 ]

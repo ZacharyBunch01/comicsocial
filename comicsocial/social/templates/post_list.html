@@ -4,17 +4,11 @@
     <div class="container">
         <div class="row justify-content-center mt-3">
             <div class="col-md-5 col-sm-12">
-                <h5>Add a Post!</h5>
-            </div>
-        </div>
-        <div class="row justify-content-center mt-3 mb-5">
-            <div class="col-md-5 col-sm-12">
-                <form method="POST">
+                <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form | crispy }}
                     <div class="d-grid gap-2">
-                        <button class="btn btn-success 
-mt-3">Submit</button>
+                        <button class="btn btn-success mt-3">Submit</button>
                     </div>
                 </form>
             </div>
@@ -24,6 +18,7 @@ mt-3">Submit</button>
             <div class="col-md-5 col-sm-12 border-bottom">
                 <p><strong>{{ post.author }}</strong> {{ post.created_on 
 }}</p>
+                <p>{{ post.comic }}</p>
                 <p>{{ post.body }}</p>
 		<a class = "stretched-link" href = "{% url 'like' 
 post.pk%}"></a>
@@ -60,6 +55,8 @@ position-relative">
 href="{% url 'profile' post.author.profile.pk %}">@{{ post.author }}</a> 
 {{ post.created_on }}</p>
                 <div class="position-relative">
+		<p{{post.comic}}></p>
+		<img src = "{{ post.comic.url }}" class = "post-comic"/>
                     <p>{{ post.body }}</p>
                     <a class="stretched-link" href="{% url 'post-detail' 
 post.pk %}"></a>
