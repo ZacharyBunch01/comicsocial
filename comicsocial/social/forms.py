@@ -2,18 +2,16 @@ from django import forms
 from .models import Post, Comment
 
 class PostForm(forms.ModelForm):
-	body = forms.CharField(
-		label = '',
-		widget = forms.Textarea(
-			attrs = {'rows': '1',
-			'placeholder': 'Name'}
-		))
+    body = forms.CharField(
+        label = '',
+        widget = forms.Textarea(
+            attrs = {'rows': '1', 'placeholder': 'Name'}))
 
-	comic = forms.ImageField(required = True)
+    comic = forms.ImageField(required = True)
 
-	class Meta:
-		model = Post
-		fields = ['body']
+    class Meta:
+        model = Post
+        fields = ['body', 'comic']
 
 class CommentForm(forms.ModelForm):
 	comment = forms.CharField(

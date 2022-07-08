@@ -6,8 +6,7 @@
             href="{% url 'post-list' %}"
           {% else %}
           href="{% url 'index' %}"
-          {% endif %}
-        >
+          {% endif %}>
             Comic Social
           </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,11 +28,11 @@ value="{{request.GET.query}}">
             <div class="nav-item dropdown">
               <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><i class="fas fa-user"></i></a>
               <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{% url 'profile' user.pk %}">Profile</a></li>
+                <!--<li><a class="dropdown-item" href="{% url 'profile'
+request.user.profile.pk %}">Profile</a></li>-->
                 <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
               </ul>
             </div>
-		<li><a class="dropdown-item" href="{% url 'profile' user.pk %}">Profile</a></li>
           {% endif %}
       </div>
     </div>

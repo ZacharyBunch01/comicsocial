@@ -5,7 +5,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class Post(models.Model):
-	comic = models.ImageField(upload_to  = 'uploads/comics/', blank = True, null = True)
+	comic = models.ImageField(upload_to = 'uploads/comics/', blank = True, null = True)
 	body = models.TextField()
 	created_on = models.DateTimeField(default=timezone.now)
 	author = models.ForeignKey(User, on_delete=models.CASCADE)

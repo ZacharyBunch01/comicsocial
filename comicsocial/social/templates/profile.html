@@ -9,17 +9,24 @@
     <div class="row justify-content-center mt-5">
         <div class="card col-md-8 col-sm-12 shadow-sm px-5 pt-3">
             <div class="text-center">
-		{% if profile.picture.url == "" %}
+		{% if profile.picture %}
+        {% else %}
 			<profile.picture.url = "uploads/profile_pictures/default.png"/>
 		{% endif %}
-                <img src="{{ profile.picture.url }}" class="rounded-circle" width="100" height="100" />
+                <img src="{{ profile.picture.url }}" class="" width="100" height="100" />
                 {% if profile.name %}
                 <h3 class="py-4">{{ profile.name }}
                     <span>
                         {% if request.user == user %}
                         <a href="{% url 'profile-edit' profile.pk %}" class="edit-color"><i class="far fa-edit"></i></a>
                         {% endif %}
-                    </span></h3>
+                        </span>
+                </h3>
+                        {% else %}
+                        <h3 class="py-4">
+                        <span>
+                        <a href="{% url 'profile-edit' profile.pk %}" class="edit-color"><i class="far fa-edit"></i></a>
+                    </span>
                 {% endif %}
             </div>
                 
@@ -59,11 +66,11 @@ class="post-link">Subscribers: {{ profile.followers.all.count }}</a>
     <div class="row justify-content-center mt-5">
         <div class="col-md-8 col-sm-12 border-bottom position-relative">
             <div>
-                <a href="{% url 'profile' post.author.profile.pk %}"><img class="rounded-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}" /></a>
+                <a href="{% url 'profile' post.author.profile.pk %}"><img class="post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}" /></a>
                 <p class="post-text"><a class="text-primary post-link" href="{% url 'profile' post.author.profile.pk %}">@{{ post.author }}</a> {{ post.created_on }}</p>
             </div>
             <div class="position-relative">
-			<img src = "{{ post.comic.url }}" class="post-comic"/>
+			<img src = "{{ post.comic.url }}" class="post-comic" />
                 <p>{{ post.body }}</p>
                 <a class="stretched-link" href="{% url 'post-detail' post.pk %}"></a>
             </div>

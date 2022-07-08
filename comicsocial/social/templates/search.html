@@ -5,6 +5,7 @@
     <div class="row justify-content-center mt-3">
         <div class="col-md-5 col-sm-12 border-bottom position-relative">
             <div class="position-relative">
+                <a href="{% url 'profile' profile.pk %}"><img class="post-img" height="30" width="30" src="{{ profile.picture.url }}" /></a>
                 <p><a style="text-decoration: none;" class="text-primary" href="{% url 'profile' profile.pk %}">@{{ profile.user }}</a></p>
                 {% if profile.location %}
                 <p>{{ profile.location }}</p>
