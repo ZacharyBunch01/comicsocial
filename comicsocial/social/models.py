@@ -48,3 +48,11 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender = User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+class Files(models.Model):
+	name = models.CharField(max_length = 30)
+	image = models.TextField()
+	canvas_image = models.TextField()
+
+	def __unicode__(self):
+		return self.name

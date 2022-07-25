@@ -1,12 +1,59 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.views import View
-from .models import Post, Comment, UserProfile
+from .models import Post, Comment, UserProfile, Files
 from .forms import PostForm, CommentForm
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView, DeleteView
 from django.http import HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
+import psycopg2
+import json
+
+def paint(request):
+	if request.method == 'GET':
+		return render(request, 'paint.html')
+	elif request.method == 'POST':
+		filename = request.POST['fname']
+		data = request.POST['data']
+		'''
+	conn = psycopq2.connect(database="djangopaint", 
+user="nidhin")
+		cur = conn.cursor()
+		cur.execute("INSERT INTO files(name, image) 
+VALUES(%s, %s)", [filename, data])
+		conn.commit()
+		conn.close()
+		'''
+
+		return HTTPResponseRedirect('/')
+
+@csrf_exempt
+def paint(request):
+    if request.method == 'GET':
+        return render(request, 'paint.html')
+    elif request.method == 'POST':
+        filename = request.POST['save_fname']
+        data = request.POST['save_cdata']
+        image = request.POST['save_image']
+        file_data = Files(name=filename, image=data, 
+canvas_image=image)
+        file_data.save()
+        return HttpResponseRedirect('/')
+ 
+@csrf_exempt       
+def files(request):
+    if request.method == 'GET':
+        all_data = Files.objects.all()
+        return render(request, 'files.html', { 'files': all_data })
+
+def search(request):
+    if 'filename' in request.GET:
+        filename = request.GET['filename']
+        datafile = Files.objects.get(name=filename)
+        return render(request, 'search.html', { 'data': 
+datafile.canvas_image, 'filename': filename })
 
 class PostListView(View):
 	def get(self, request, *args, **kwargs):
@@ -332,4 +379,3 @@ class CommentReplyView(LoginRequiredMixin, View):
 			new_comment.save()
 
 		return redirect('post-detail', pk = post_pk)
-

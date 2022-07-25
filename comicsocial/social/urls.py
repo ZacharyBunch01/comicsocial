@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView	
+from .views import PostListView, PostDetailView, PostEditView, PostDeleteView, CommentDeleteView, ProfileView, ProfileEditView, AddFollower, RemoveFollower, AddLike, AddDislike, UserSearch, ListFollowers, AddCommentLike, AddCommentDislike, CommentReplyView
+from .views import paint, files
 
 urlpatterns = [
 	path('', PostListView.as_view(), name='post-list'),
@@ -18,5 +19,7 @@ urlpatterns = [
 	path('post/<int:post_pk>/comment/delete/<int:pk>/', CommentDeleteView.as_view(), name = 'comment-delete'),
 	path('post/<int:post_pk>/comment/<int:pk>/like', AddCommentLike.as_view(), name = 'comment-like'),
 	path('post/<int:post_pk>/comment/<int:pk>/dislike', AddCommentDislike.as_view(), name = 'comment-dislike'),
-	path('post/<int:post_pk>/comment/<int:pk>/reply', CommentReplyView.as_view(), name = 'comment-reply')
+	path('post/<int:post_pk>/comment/<int:pk>/reply', CommentReplyView.as_view(), name = 'comment-reply'),
+	path('draw/', paint, name='draw'),
+	path('files/', files, name='files'),
 ]
