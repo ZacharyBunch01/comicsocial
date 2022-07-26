@@ -33,8 +33,8 @@ canvas.addEventListener("touchstart", function (e)
 {
     mousePos = getTouchPos(canvas, e);
     
-    curX = mousePos - canvas.offsetLeft;
-    curY = mousePos - canvas.offsetTop;
+    curX = mousePos - canvas.getBoundingClientRect().left;
+    curY = mousePos - canvas.getBoundingClientRect().top;
     
     isTouch = true;
     
@@ -58,7 +58,7 @@ canvas.addEventListener("touchmove", function (e)
 {
     var touch = e.touches[0];
     
-    var mouseEvent = new MouseEvent("mousemove", { clientX : touch.clientX, clinetY : touch.clientY });
+    var mouseEvent = new MouseEvent("mousemove", { clientX : touch.clientX, clientY : touch.clientY });
     
     canvas.dispatchEvent(mouseEvent);
     
@@ -72,8 +72,8 @@ function getTouchPos(canvasDom, touchEvent)
     
     return
     {
-        x : touchEvent.touches[0].clientX - rect.left,
-        y.touchEvent.touches[0].clientY - rect.top
+        x : touchEvent.touches[0].clientX - getBoundingClientRect().left,
+        y.touchEvent.touches[0].clientY - getBoundingClientRect().top
     };
 }
 
@@ -97,10 +97,11 @@ document.body.addEventListener("touchend", function (e)
 
 document.body.addEventListener("touchmove", function (e)
 {
-  if (e.target == canvas)
-  {
-      e.preventDefault();
-  }
+    if (e.target == canvas)
+    {
+        e.preventDefault();
+    }
+    
 }, {passive : false});
 
 function color(colorValue)
@@ -161,8 +162,8 @@ function pencil()
 {
 	canvas.onmousedown = function(e)
 	{
-		curX = e.clientX - canvas.left;
-		curY = e.clientY - canvas.tTop;
+		curX = e.clientX - canvas.getBoundingClientRect().left;
+		curY = e.clientY - canvas.getBoundingClientRect().top;
 		hold = true;
 
 		prevX = curX;
@@ -175,8 +176,8 @@ function pencil()
 	{
 		if(hold)
 		{
-			curX = e.clientX - canvas.left;
-			curY = e.clientY - canvas.top;
+			curX = e.clientX - canvas.getBoundingClientRect().left;
+			curY = e.clientY - canvas.getBoundingClientRect().top;
 			draw();
 		}
 	};
@@ -204,8 +205,8 @@ function line()
 	canvas.onmousedown = function(e)
 	{
 		img = ctx.getImageData(0, 0, width, height);
-		prevX = e.clientX - canvas.left;
-		prevY = e.clientY - canvas.top;
+		prevX = e.clientX - canvas.getBoundingClientRect().left;
+		prevY = e.clientY - canvas.getBoundingClientRect().top;
 		hold = true;
 	};
 
@@ -214,8 +215,8 @@ function line()
 		if(hold)
 		{
 			ctx.putImageData(img, 0, 0);
-			curX = e.clientX - canvas.left;
-			curY = e.clientY - canvas.top;
+			curX = e.clientX - canvas.getBoundingClientRect().left;
+			curY = e.clientY - canvas.getBoundingClientRect().top;
 			ctx.beginPath();
 			ctx.moveTo(prevX, prevY);
 			ctx.lineTo(curX, curY);
@@ -241,8 +242,8 @@ function rectangle()
 	canvas.onmousedown = function(e)
 	{
 		img = ctx.getImageData(0, 0, width, height);
-		prevX = e.clientX - canvas.offsetLeft;
-		prevY = e.clientY - canvas.offsetTop;
+		prevX = e.clientX - canvas.getBoundingClientRect().left;
+		prevY = e.clientY - canvas.getBoundingClientRect().top;
 		hold = true;
 	};
 
@@ -251,8 +252,8 @@ function rectangle()
 		if(hold)
 		{
 			ctx.putImageData(img, 0, 0);
-			curX = e.clientX - canvas.offsetLeft - prevX;
-			curY = e.clientY - canvas.offsetTop - prevY;
+			curX = e.clientX - canvas.getBoundingClientRect().left - prevX;
+			curY = e.clientY - canvas.getBoundingClientRect().top - prevY;
 			ctx.strokeRect(prevX, prevY, curX, curY);
 			
 			if(fillValue)
@@ -280,8 +281,8 @@ function circle()
 	canvas.onmousedown = function(e)
 	{
 		img = ctx.getImageData(0, 0, width, height);
-		prevX = e.clientX - canvas.offsetLeft;
-		prevY = e.clientY - canvas.offsetTop;
+		prevX = e.clientX - canvas.getBoundingClientRect().left;
+		prevY = e.clientY - canvas.getBoundingClientRect().top;
 		hold = true;
 	};
 
@@ -290,8 +291,8 @@ function circle()
 		if(hold)
 		{
 			ctx.putImageData(img, 0, 0);
-			curX = e.clientX - canvas.offsetLeft;
-			curY = e.clientY - canvas.offsetTop;
+			curX = e.clientX - canvas.getBoundingClientRect().left;
+			curY = e.clientY - canvas.getBoundingClientRect().top;
 			ctx.beginPath();
 			ctx.arc(Math.abs(curX + prevX) * 0.5, Math.abs(curY + prevY)  * 0.5, Math.sqrt(Math.pow(curX - prevX, 2) + Math.pow(curY - prevY, 2)) * 0.5, 0, Math.PI * 2, true);
 			ctx.closePath();
@@ -319,8 +320,8 @@ function eraser()
 {
 	canvas.onmousedown = function(e)
 	{
-		curX = e.client.X - canvas.offsetLeft;
-		curY = e.clientY - canvas.offsetTop;
+		curX = e.client.X - canvas.getBoundingClientRect().left;
+		curY = e.clientY - canvas.getBoundingClientRect().top;
 		hold = true;
 		prevX = curX;
 		prevY = curY;
@@ -332,8 +333,8 @@ function eraser()
 	{
 		if(hold)
 		{
-			curX = e.clientX - canvas.offsetLeft;
-			curY = e.clientY - canvas.offsetTop;
+			curX = e.clientX - canvas.getBoundingClientRect().left;
+			curY = e.clientY - canvas.getBoundingClientRect().top;
 			draw();
 		}
 	};
@@ -410,11 +411,7 @@ function drawText(txt, x, y)
     ctx.textAlign = 'left'
     ctx.font = '14px sans-serif'
     
-    // This is a terrible fix
-    if(isTouch)
-        ctx.fillText(txt, x, y);
-    else
-        ctx.fillText(txt, x - canvas.offsetLeft - canvas.left, y - canvas.offsetTop - canvas.top);
+    ctx.fillText(txt, x - canvas.getBoundingClientRect().left, y - canvas.getBoundingClientRect().top + 15);
 }
 
 var dataUrl = canvas.toDataURL();
