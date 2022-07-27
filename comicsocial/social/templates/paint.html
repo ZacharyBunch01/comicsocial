@@ -170,6 +170,13 @@ onclick="reducePixel()" style="width: 25px;">-</button></td>
         </table>
 	</fieldset>
         </form>
-        </div>
+	<div class="col-md-5 col-sm-12">
+	<form method="POST" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{ form | crispy }}
+	<div class="d-grip gap-2">
+        <button id="savecomic" type="button" style="height: 25px; width: 110px;" 
+onclick="savecomic()">Save</button>
+	</div>
 <script src="{% static 'js/script.js' %}"></script>
 {% endblock %}
