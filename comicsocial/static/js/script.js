@@ -1,4 +1,5 @@
 var canvas = document.getElementById("paint");
+var image = document.getElementById("image");
 var ctx = canvas.getContext("2d");
 var width = canvas.width, height = canvas.height;
 var curX, curY, prevX, prevY;
@@ -365,7 +366,15 @@ function save()
 	var image = canvas.toDataURL();
 
 	$.post("/", {save_fname : filename, save_cdata: data, save_image: image});
-	alert(filename + " saved");
+	//alert(filename + " saved");
+}
+
+function savecomic()
+{
+	$('#canvas').click(function(){
+     $(this).parent().attr('href', document.getElementById('canvas').toDataURL());
+     $(this).parent().attr('download', "comic.png");    
+});
 }
 
 function text()
@@ -414,4 +423,4 @@ function drawText(txt, x, y)
     ctx.fillText(txt, x - canvas.getBoundingClientRect().left, y - canvas.getBoundingClientRect().top + 15);
 }
 
-var dataUrl = canvas.toDataURL();
+imageHolder = canvas.toDataURL();
