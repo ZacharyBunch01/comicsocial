@@ -369,12 +369,17 @@ function save()
 	//alert(filename + " saved");
 }
 
+var canvasImage = canvas.toDataURL(type, encoderOptions);
+
 function savecomic()
 {
-	$('#canvas').click(function(){
-     $(this).parent().attr('href', document.getElementById('canvas').toDataURL());
-     $(this).parent().attr('download', "comic.png");    
-});
+	var tmpLink = document.createElement('a');
+	tmpLink.download = 'comic.png';
+	tmpLink.href = imageData;
+
+	document.body.appendChild(tmpLink);
+	tmpLink.click()
+	document.body.removeChild(tmpLink):
 }
 
 function text()
