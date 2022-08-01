@@ -73,7 +73,7 @@ function getTouchPos(canvasDom, touchEvent)
     
     return
     {
-        x : touchEvent.touches[0].clientX - getBoundingClientRect().left,
+        x.touchEvent.touches[0].clientX - getBoundingClientRect().left,
         y.touchEvent.touches[0].clientY - getBoundingClientRect().top
     };
 }
@@ -361,15 +361,11 @@ function eraser()
 
 function save()
 {
-	var filename = document.getElementById("fname").value;
-	var data = JSON.stringify(canvasData);
-	var image = canvas.toDataURL();
-
-	$.post("/", {save_fname : filename, save_cdata: data, save_image: image});
-	//alert(filename + " saved");
+    var link = document.getElementById('link');
+    link.setAttribute('download', 'comic.png');
+    link.setAttribute('href', canvas.toDataURL("comic/png").replace("comic/png", "image/octet-stream"));
+    link.click();
 }
-
-var canvasImage = canvas.toDataURL(type, encoderOptions);
 
 function savecomic()
 {
@@ -379,7 +375,7 @@ function savecomic()
 
 	document.body.appendChild(tmpLink);
 	tmpLink.click()
-	document.body.removeChild(tmpLink):
+	document.body.removeChild(tmpLink);
 }
 
 function text()
