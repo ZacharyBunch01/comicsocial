@@ -17,6 +17,7 @@ def paint(request):
 	elif request.method == 'POST':
 		filename = request.POST['fname']
 		data = request.POST['data']
+
 		'''
 	conn = psycopq2.connect(database="djangopaint", 
 user="nidhin")
@@ -35,14 +36,13 @@ def paint(request):
         return render(request, 'paint.html')
     elif request.method == 'POST':
         filename = request.POST['save_fname']
-        data = request.POST['save_cdata']
         image = request.POST['save_image']
-        file_data = Files(name=filename, image=data, 
+        file_data = Files(name=filename,
 canvas_image=image)
         file_data.save()
         return HttpResponseRedirect('/')
- 
-@csrf_exempt       
+
+@csrf_exempt
 def files(request):
     if request.method == 'GET':
         all_data = Files.objects.all()
@@ -52,8 +52,12 @@ def search(request):
     if 'filename' in request.GET:
         filename = request.GET['filename']
         datafile = Files.objects.get(name=filename)
-        return render(request, 'search.html', { 'data': 
+        return render(request, 'search.html', { 'data':
 datafile.canvas_image, 'filename': filename })
+
+class TemplateView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'templates.html')
 
 class PostListView(View):
 	def get(self, request, *args, **kwargs):
