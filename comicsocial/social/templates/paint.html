@@ -4,7 +4,7 @@
 {% load static %}
 
 <div align="center">
-<canvas id="paint" width="600" height="600" style="border: 5px solid #000000; background-color: #FFFFFF">Update your browser to support HTML5 Canvas</canvas>
+    <canvas id="paint"  style="border: 5px solid #000000; background-color: #FFFFFF">Update your browser to support HTML5 Canvas</canvas>
 <body onload="pencil()">
     <tr>
         <p><table>
@@ -170,6 +170,13 @@ onclick="reducePixel()" style="width: 25px;">-</button></td>
         </table>
 	</fieldset>
         </form>
+        <link rel="stylesheet" type="text/css" href={% static "css/paint.css" %} media="screen" />
+        <div id="drop-region">
+            <div class="drop-message">
+            </div>
+            <div id="image-preview"></div>
+            </div>
+        </link>
 	<div class="col-md-5 col-sm-12">
 	<form method="POST" enctype="multipart/form-data">
 	{% csrf_token %}
