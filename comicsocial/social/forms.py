@@ -21,3 +21,6 @@ class CommentForm(forms.ModelForm):
 	class Meta:
 		model = Comment
 		fields = ['comment']
+
+class ShareForm(forms.Form):
+    body = forms.CharField(label = '', widget = forms.Textarea(attrs = {'rows': '1', 'placeholder' : 'Name'}))

@@ -10,7 +10,11 @@ class Post(models.Model):
 	created_on = models.DateTimeField(default=timezone.now)
 	author = models.ForeignKey(User, on_delete=models.CASCADE)
 	likes = models.ManyToManyField(User, blank = True, related_name = 'likes')
+	favorites = models.ManyToManyField(User, blank = True, related_name = 'postFavorites')
 	dislikes = models.ManyToManyField(User, blank = True, related_name = 'dislikes')
+	shared_on = models.DateTimeField(default=timezone.now)
+	shared_user = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name = '+')
+	shared_body = models.TextField(blank = True, null = True)
 
 class Comment(models.Model):
 	comment = models.TextField()
@@ -39,6 +43,8 @@ class UserProfile(models.Model):
 	picture = models.ImageField(upload_to = 
 'uploads/profile_pictures/', default = 'uploads/profile_pictures/default.png', blank = True)
 	followers = models.ManyToManyField(User, blank = True, related_name = 'followers')
+	following = models.ManyToManyField(User, blank = True, related_name = 'following')
+	favorites = models.ManyToManyField(Post, blank = True, related_name = 'profileFavorites')
 
 @receiver(post_save, sender = User)
 def create_user_profile(sender, instance, created, **kwargs):

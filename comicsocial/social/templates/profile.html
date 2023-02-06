@@ -13,7 +13,7 @@
         {% else %}
 			<profile.picture.url = "uploads/profile_pictures/default.png"/>
 		{% endif %}
-                <img src="{{ profile.picture.url }}" class="" width="100" height="100" />
+                <img src="{{ profile.picture.url }}"  width="100" height="100" />
                 {% if profile.name %}
                 <h3 class="py-4">{{ profile.name }}
                     <span>
@@ -44,9 +44,9 @@ class="post-link">Subscribers: {{ profile.followers.all.count }}</a>
             <div>
             </div>
             
-            <div class="mb-3">
-                {% if user == request.user %}
+            {% if user == request.user %}
                 {% else %}
+                <div class="mb-3">
                 {% if is_following %}
                 <form method="POST" action="{% url 'remove-subscriber' profile.pk %}">
                     {% csrf_token %}
@@ -58,11 +58,79 @@ class="post-link">Subscribers: {{ profile.followers.all.count }}</a>
                     <button class="btn btn-outline-success" type="submit">Subscribe</button>
                 </form>
                 {% endif %}
-                {% endif %}
             </div>
+            {% endif %}
         </div>
     </div>
+    <style>
+        .tab
+        {
+          overflow: hidden;
+          border: 1px solid #ccc;
+          background-color: #f1f1f1;
+        }
+
+        .tab button
+        {
+          background-color: inherit;
+          float: left;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          padding: 14px 16px;
+          transition: 0.3s;
+        }
+
+        .tab button:hover
+        {
+          background-color: #ddd;
+        }
+
+        .tab button.active
+        {
+          background-color: #ccc;
+        }
+        
+        .tabcontent
+        {
+          display: none;
+          padding: 6px 12px;
+          border: 1px solid #ccc;
+          border-top: none;
+        }
+        </style>
+    
+    <script>
+         function openTab(e, tabName)
+         {
+             var i, tabcontent, tablinks;
+
+             tabcontent = document.getElementsByClassName("tabcontent");
+          
+            for (i = 0; i < tabcontent.length; i++)
+            {
+                tabcontent[i].style.display = "none";
+            }
+
+            tablinks = document.getElementsByClassName("tablinks");
+          
+            for (i = 0; i < tablinks.length; i++)
+            {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            document.getElementById(tabName).style.display = "block";
+            e.currentTarget.className += " active";
+        }
+        </script>
+    
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'Posts')" id="defaultOpen">Posts</button>
+            <button class="tablinks" onclick="openTab(event, 'Favorites')">Favorites</button>
+            </div>
+    <div id="Posts" class="tabcontent">
     {% for post in posts %}
+    {% if request.user.profile.pk == post.author.profile.pk %}
     <div class="row justify-content-center mt-5">
         <div class="col-md-8 col-sm-12 border-bottom position-relative">
             <div>
@@ -85,9 +153,60 @@ class="post-link">Subscribers: {{ profile.followers.all.count }}</a>
                     <input type="hidden" name="next" value="{{ request.path }}">
                     <button class="remove-default-btn" type="submit"><i class="far fa-thumbs-down"></i> <span>{{ post.dislikes.all.count }}</span></button>
                 </form>
+                <form method="POST" action="{% url 'addFavorite' post.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button class="remove-default-btn" type="submit"><i class="far fa-thumbs-up"></i> <span>{{ post.favorites.all.count }}</span></button>
+                </form>
             </div>
         </div>
-    </div>
+        {% endif %}
     {% endfor %}
+    </div>
+    </div>
+    </div>
 </div>
+</div>
+</div>
+</div>
+    <div id="Favorites" class="tabcontent">
+        {% for post in userProfile.profileFavorites %}
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8 col-sm-12 border-bottom position-relative">
+                <div>
+                    <a href="{% url 'profile' post.author.profile.pk %}"><img class="post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}" /></a>
+                    <p class="post-text"><a class="text-primary post-link" href="{% url 'profile' post.author.profile.pk %}">@{{ post.author }}</a> {{ post.created_on }}</p>
+                </div>
+                <div class="position-relative">
+                <img src = "{{ post.comic.url }}" class="post-comic" />
+                    <p>{{ post.body }}</p>
+                    <a class="stretched-link" href="{% url 'post-detail' post.pk %}"></a>
+                </div>
+                <div class="d-flex flex-row">
+                    <form method="POST" action="{% url 'like' post.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button class="remove-default-btn" type="submit"><i class="far fa-thumbs-up"></i> <span>{{ post.likes.all.count }}</span></button>
+                    </form>
+                    <form method="POST" action="{% url 'dislike' post.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button class="remove-default-btn" type="submit"><i class="far fa-thumbs-down"></i> <span>{{ post.dislikes.all.count }}</span></button>
+                    </form>
+                    <form method="POST" action="{% url 'addFavorite' post.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button class="remove-default-btn" type="submit"><i class="far fa-thumbs-up"></i> <span>{{ post.favorites.all.count }}</span></button>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<script>
+    document.getElementById("defaultOpen").click();
+</script>
 {% endblock content %}

@@ -3,8 +3,40 @@
 {% block content %}
 {% load static %}
 
-<div align="center">
-    <canvas id="paint"  style="border: 5px solid #000000; background-color: #FFFFFF">Update your browser to support HTML5 Canvas</canvas>
+    <div align "right" wrapper="absolute">
+<link rel="stylesheet" type="text/css" href={% static "css/paint.css" %} media="screen" />
+<p style="margin-left: 110px; font-weight: 600">Upload Images Here</p>
+<div id="drop-region" style="position: absolute">
+    <div class="drop-message">
+    </div>
+    <div id="image-preview"></div>
+    </div>
+</link>
+</div>
+<div align="center" style="">
+    <canvas id="imageCanvas" style="border: 5px solid #000000; background-color: #FFFFFF z-index: 2; float: center">Update your browser to support HTML5 Canvas</canvas>
+    <canvas id="paint" style="border: 5px solid #000000; background-color: #FFFFFF z-index: -9999; float: center;"></canvas>
+        <div class="slider" style="float: right; margin-left: 500px; margin-top: -100px;">
+        <input type="range" min="5" max="200" value="100" oninput="imageWidth.innerText = this.value; scaleImage();">
+            <div style="padding-left: 4px; font-scale: 5px; font-weight: 600; font-family: Open Sans;">Width</div>
+        <p id="imageWidth">100</p>
+        </div>
+        <div class="slider" style="float: right; margin-left: 500px; margin-top: -50px;">
+        <input type="range" min="5" max="200" value="100" oninput="imageHeight.innerText = this.value; scaleImage();">
+            <div style="padding-left: 4px; font-scale: 5px; font-weight: 600; font-family: Open Sans;">Height</div>
+        <p id="imageHeight">100</p>
+        </div>
+        <div class="slider" style="float: right; margin-left: 500px; float: right;">
+        <input type="range" min="0" max="360" value="0" oninput="imageRotation.innerText = this.value; rotateImage();">
+            <div style="padding-left: 4px; font-scale: 5px; font-weight: 600; font-family: Open Sans;">Rotation</div>
+        <p id="imageRotation">0</p>
+        <div style="height: 25px; width: 110px; margin-left: 50px; padding-left: 4px; margin-top: 150px; float: right; position: absolute;">
+        <button id="vFlip" type="button" onclick="flipV();">V Flip</button>
+        <button id="hFlip" type="button" onclick="flipH();" style="margin-top: 10px;">H Flip</button>
+            <button class="btn btn-success mt-3" oninput="submitImage();">Submit</button>
+        </div>
+        </div>
+        <div id="noncanv" style="font-size: 16px;">
 <body onload="pencil()">
     <tr>
         <p><table>
@@ -16,6 +48,8 @@
                     <button id="rectangletool" type="button" style="height: 25px; width: 110px;" onclick="rectangle()">Rectangle</button>
                     <button id="circletool" type="button" style="height: 25px; width: 110px;" onclick="circle()">Circle</button>
                     <button id="texttool" type="button" style="height: 25px; width: 110px;" onclick="text()">Text</button>
+                    <button id="undotool" type="button" style="height: 25px; width: 110px;" onclick="undo()">Undo</button>
+                    <button id="redotool" type="button" style="height: 25px; width: 110px;" onclick="redo()">Redo</button>
                     <button id="resettool" type="button" style="height: 25px; width: 110px;" onclick="reset()">Clear</button>
                     </fieldset>
                     </td>
@@ -159,33 +193,34 @@
             <td><button style="background-color: #7CFC00; height: 
 20px; width: 20px;" onclick="color('#7CFC00')"></button>
         </tr>
-            <td><label>Line Width</label></td>
-            <td><button id="pixel_plus" type="button"
-onclick="addPixel()" style="width: 25px;">+</button></td>
-            <td><button id="pixel_minus" type="button"
-onclick="reducePixel()" style="width: 25px;">-</button></td>
-            <script>"print(ctx.lineWidth)"</script>
+            <input type="range" min="1" max="200" value="2" oninput="lineWidth.innerText = this.value">
+                <div style="padding-left: 4px; font-scale: 5px; font-weight: 600; font-family: Open Sans;">Line Width</div>
+            <p id="lineWidth">2</p>
+            </div>
         <tr>
         </tr>
         </table>
 	</fieldset>
         </form>
-        <link rel="stylesheet" type="text/css" href={% static "css/paint.css" %} media="screen" />
-        <div id="drop-region">
-            <div class="drop-message">
-            </div>
-            <div id="image-preview"></div>
-            </div>
-        </link>
 	<div class="col-md-5 col-sm-12">
 	<form method="POST" enctype="multipart/form-data">
 	{% csrf_token %}
 	{{ form | crispy }}
 	<div class="d-grip gap-2">
-        <button id="savecomic" type="button" style="height: 25px; width: 110px;" 
-onclick="save()">Save</button>
+        <form method="POST" enctype="multipart/form-data">
+        <label for="fname">Comic Name:</label>
+        <input type="text" id="fname" name="fname" onkeypress="textEnterPress(event)">
+        <button id="save" type="button" style="height: 25px; width: 110px;"
+onclick="save()">Submit Comic</button>
+            {% csrf_token %}
+            {{ form | crispy }}
         <a id="link"></a>
 	</div>
+    </form>
+    </div>
+    </div>
+    </h1>
 <script src="{% static 'js/script.js' %}"></script>
+<link href="{% static 'css/HTMLisReallyDumb.css' %}" rel="stylesheet">
 {% endblock %}
 
