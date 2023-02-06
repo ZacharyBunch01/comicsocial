@@ -1,0 +1,31 @@
+{% extends 'landing/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+
+<html lang="en-US" ng-app="social">
+<ng-app ng-app="social">
+    
+    {% csrf_token %}
+    {{ form | crispy }}
+    
+    <div align="center">
+                
+    <header style="font-size:25px;">Choose a Template</header>
+    
+    <p>
+    <a href="{% url 'drawtemplate1' %}"><img style="border: 2px solid #000000; background-color: #FFFFFF" width="400" height="400" src="../../media/uploads/assets/template1.png" /></a>
+    <a href="{% url 'drawtemplate2' %}"><img style="border: 2px solid #000000; background-color: #FFFFFF" width="400" height="400" src="../../media/uploads/assets/template8.png" /></a>
+    <a href="{% url 'drawtemplate3' %}"><img style="border: 2px solid #000000; background-color: #FFFFFF" width="400" height="400" src="../../media/uploads/assets/template9.png" /></a>
+    </p>
+    <p>
+    <a href="{% url 'drawtemplate4' %}"><img style="border: 2px solid #000000; background-color: #FFFFFF" width="200" height="400" src="../../media/uploads/assets/template2.png" /></a>
+    <a href="{% url 'drawtemplate5' %}"><img style="border: 2px solid #000000; background-color: #FFFFFF" width="200" height="400" src="../../media/uploads/assets/template6.png" /></a>
+    <a href="{% url 'drawtemplate6' %}"><img style="border: 2px solid #000000; background-color: #FFFFFF" width="400" height="200" src="../../media/uploads/assets/template3.png" /></a>
+    <a href="{% url 'drawtemplate7' %}"><img style="border: 2px solid #000000; background-color: #FFFFFF" width="400" height="200" src="../../media/uploads/assets/template7.png" /></a>
+    </p>
+    
+    </div>
+</ng-app>
+
+{% endblock %}

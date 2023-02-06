@@ -1,0 +1,72 @@
+{% extends 'landing/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% load static %}
+    <div class="container">
+        <div class="row justify-content-center mt3">
+            <div class="col-md-5 col-sm-12 border-bottom">
+                {% if user.is_authenticated %}
+	<a href="{% url 'templates' %}" class="btn btn-dark">Draw</a>
+    {% endif %}
+    <a href="{% url 'games' %}" class="btn btn-dark">Games</a>
+	</div>
+	</div>
+            </div>
+        </div>
+	</div>
+        {% for post in post_list %}
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12 border-bottom <position-relative>">
+                        </a>
+                    <a href="{% url 'profile' post.author.profile.pk %}">
+                        <img class="round-circle post-img" height="30" width="30" src="{{ post.author.profile.picture.url }}"/>
+                        </a>
+                    <p><a style="text-decoration: none;" class="text-primary"
+    href="{% url 'profile' post.author.profile.pk %}">@{{ post.author }}</a>
+    {{ post.created_on }}</p>
+                    <p class="post-text">
+                    </div>
+                    </form>
+        </div>
+        <div class="row justify-content-center mt-3">
+            <div class="col-md-5 col-sm-12 border-bottom 
+position-relative">
+                <div class="position-relative">
+		<p{{post.comic}}></p>
+		<img src = "{{ post.comic.url }}" class = "post-comic"/>
+                    <p>{{ post.body }}</p>
+                    <a class="stretched-link" href="{% url 'post-detail' post.pk %}"></a>
+                </div>
+                <div class="position-relative">
+        <div class = "d-flex flex-row"><form method = "POST" action = "{% url 'like' post.pk %}">
+        {% csrf_token %}
+        <input type = "hidden" name = "next" value = "{{ request.path }}">
+                            <button class="remove-default-btn" type="submit"><i class = "far fa-thumbs-up"> <span>{{ post.likes.all.count }}</span></i></button>
+                    </form>
+                    <form method="POST" action="{% url 'dislike' post.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button class="remove-default-btn" type="submit"><i class="far fa-thumbs-down"> <span>{{ post.dislikes.all.count }}</span></i></button>
+                    </form>
+                    <div class = "d-flex flex-row"><form method = "POST" action = "{% url 'addFavorite' post.pk %}">
+                    {% csrf_token %}
+                    <input type = "hidden" name = "next" value = "{{ request.path }}">
+                                        <button class="remove-default-btn" type="submit"><i class = "far fa-thumbs-up"> <span>{{ post.favorites.all.count }}</span></i></button>
+                                </form>
+                        <!-->
+                    {% load social_share %}
+                          {% post_to_facebook "" object_or_url "Facebook" %}
+                          {% post_to_twitter "" post.get_absolute_url "Twitter" %}
+                          {% post_to_reddit "" object_or_url "Reddit" %}
+                          {% copy_to_clipboard "" object_or_url "Clipboard" %}
+                        <!-->
+                </div>
+            </div>
+            </div>
+        </div>
+<div>
+</div>
+{% endfor %}
+<p></p><p></p><p></p>
+<script src="{% static 'js/social.js' %}"></script>
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends 'landing/base.html' %}
+{% block content %}
+{% load static %}
+
+<style>
+    body
+    {
+        text-align: center;
+    }
+</style>
+<body onload="start()">
+<canvas width="600" height="600" style="border: 20px solid #FF0000; background-color: #ff5b74; margin: auto; text-align: center;" ></canvas>
+</body>
+<script src="{% static 'js/mm.js' %}"></script>
+
+{% endblock %}

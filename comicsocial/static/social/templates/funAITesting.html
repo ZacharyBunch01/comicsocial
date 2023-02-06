@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Image Manipulation App</title>
+<style>
+#canvas {
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+</head>
+<body>
+
+<h1>Image Manipulation App</h1>
+
+<form action="upload.php" method="post" enctype="multipart/form-data">
+    Select image to upload:
+    <input type="file" name="fileToUpload" id="fileToUpload">
+    <input type="submit" value="Upload Image" name="submit">
+</form>
+
+<div id="canvas"></div>
+
+<script>
+var canvas = document.getElementById("canvas");
+
+// Get the file from the upload
+var file = document.getElementById("fileToUpload").files[0];
+
+// Create a file reader
+var reader = new FileReader();
+
+// Set up the file reader to read the file
+reader.readAsDataURL(file);
+
+// When the file is loaded, render it on the canvas
+reader.onload = function(e) {
+    var image = new Image();
+    image.src = e.target.result;
+
+    // When the image is loaded, draw it on the canvas
+    image.onload = function() {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0);
+    }
+}
+
+// Set up the drag and drop
+$(function() {
+    $( "#canvas" ).draggable();
+});
+
+// Function to resize the image on the canvas
+function resizeImage(width, height) {
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(image, 0, 0, width, height);
+}
+
+// Function to rotate the image on the canvas
+function rotateImage(angle) {
+    var ctx = canvas.getContext("2d");
+    ctx.rotate(angle);
+    ctx.drawImage(image, 0, 0);
+}
+
+// Function to move the image on the canvas
+function moveImage(x, y) {
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(image, x, y);
+}
+
+</script>
+
+</body>
+</html>
