@@ -41,7 +41,7 @@ class DeathRect
     }
 }
 
-// Finish blcok class
+// Finish block class
 class Finish
 {
     constructor(x, y, width, height, image)
